@@ -26,57 +26,35 @@ body,
     align-self: center;
 }
 
-.card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 300px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: white;
-    position: relative;
-    margin: 10px 5px;
-}
-
-.card .suit {
-    width: 50%;
-    padding: 5px;
-    object-fit: contain;
-
-}
-
-.card .rank {
-    font-size: 70px;
-    width: 30%;
-    padding: 5px;
-    font-weight: bold;
-    text-align: center;
-    position: absolute;
-}
-
-#board {
-    width: 80%;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 150px;
-    align-self: center;
-}
-
-#river, #hole{
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-}
-
 #percent{
     color: white;
     text-align: center;
     font-size: 80px;
     padding: 30px;
+}
+
+/* ======== SIZING  ========*/
+
+@media (max-width: 1000px) {
+    /* styles for screens that are less than 480px wide */
+    #app
+    {
+        zoom: 0.5;
+    }
+}
+
+@media (min-width: 1000px) {
+    /* styles for screens that are less than 480px wide */
+    #app
+    {
+        zoom: 0.7;
+    }
+}
+
+@media (min-width: 1500px) {
+    /* styles for screens that are less than 480px wide */
+    #app
+    {
+        zoom: 0.9;
+    }
 }

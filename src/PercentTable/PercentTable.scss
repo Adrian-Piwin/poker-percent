@@ -1,0 +1,22 @@
+#percentTable
+{
+    display: table;
+    table-layout: 1fr 1fr;
+    color: white;
+    font-size: 30px;
+    width: 60%;
+    margin: 30px 20%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+#percentTable td, #percentTable th {
+    border: 1px solid #ffffff;
+    padding: 8px;
+    width: 33%;
+}
+
+#percentTable th {
+    background-color: #ffffff;
+    color: rgb(24, 24, 24);
+}

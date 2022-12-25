@@ -1,0 +1,17 @@
+#board {
+    width: 70%;
+    height: 900px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    align-self: center;
+    gap: 15px;
+}
+
+#river, #hole{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}

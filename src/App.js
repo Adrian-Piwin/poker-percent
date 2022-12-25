@@ -1,8 +1,9 @@
 import * as React from "react";
 import { useState } from "react";
-import { Board } from "./Board";
+import { Board } from "./Board/Board";
 import { faceDict, suitDict, masterHoleCards, masterRiverCards, hasLetter } from "./constants";
-import { evaluateHoleCards, test } from "./BusinessLogic";
+import { evaluateHoleCards, getPercent } from "./BusinessLogic/BusinessLogic";
+import { PercentTable } from "./PercentTable/PercentTable";
 
 export function App() {
   const [selectedCard, setSelectedCard] = useState(0)
@@ -108,8 +109,11 @@ export function App() {
   return (
     <div id="app">
       <Board selectedCard={selectedCard} riverCards={riverCards} holeCards={holeCards} />
-      <div id="percent">{test(holeCards.concat(riverCards))}%</div>
       <input maxLength={3} onKeyUp={onKeyUp} id="cardInput" placeholder="Type"></input>
+      <PercentTable 
+      pairPercent={getPercent(holeCards, riverCards, "pair")} 
+      straightPercent={getPercent(holeCards, riverCards, "straight")} 
+      />
     </div>
   );
 }

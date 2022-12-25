@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Card } from "./Card";
+import { Card } from "../Card/Card";
 import { useCallback } from 'react';
 import { useState } from "react";
-
-
+import { styles } from "../Board/Board.scss"
 
 export function Board(props) {
     const {selectedCard, riverCards, holeCards} = props
