@@ -1,33 +1,29 @@
-import { faceDict, deckQty, masterHoleCards, masterRiverCards, straightQty } from "../constants";
+import { faceDict, deckQty, masterHoleCards, masterRiverCards, straightQty, HandTypes } from "../constants";
 
-export function getPercent(holeCards, riverCards, type) {
+export function getPercent(holeCards, riverCards, handType) {
   // Remove empty objects
   holeCards = holeCards.filter(obj => Object.keys(obj).length > 0);
   riverCards = riverCards.filter(obj => Object.keys(obj).length > 0);
   let chances = (masterRiverCards.length - riverCards.length) + (masterHoleCards.length - holeCards.length)
-  let percentObj = { player: 0, opponent: 0 }
 
   // Get percent for selected type
   if (holeCards.length+riverCards.length > 0){
-    switch (type){
-        case "pair":
-          percentObj.player = pairPercent(holeCards.concat(riverCards), chances)
-          percentObj.opponent = 0
-          break
-        case "straight":
-          percentObj.player = straightPercent(holeCards.concat(riverCards), chances)
-          percentObj.opponent = 0
-          break
+    switch (handType){
+        case HandTypes.Pair:
+          return pairPercent(holeCards.concat(riverCards), chances)
+        case HandTypes.TwoPair:
+          return twoPairPercent(holeCards.concat(riverCards), chances)
+        case HandTypes.Straight:
+          return straightPercent(holeCards.concat(riverCards), chances)
     }
   }
 
-  return percentObj
+  return 0
 }
 
 // =============== Calculate Straight Percent ===============
 
 function straightPercent(cards, chances) {
-
   // Get list of ranks
   let rankList = cards.map(card => card.rank);
 
@@ -44,7 +40,7 @@ function straightPercent(cards, chances) {
       for (let k = 0; k < straightQty; k++) {
         straight.push(k == j ? rank : rank + k - j)
       }
-      if (!straight.some(v => v > 14 || v <= 0))
+      if (!straight.some(v => v > 14 || v <= 1))
         potStraights.push(straight)
     }
   }
@@ -65,7 +61,7 @@ function straightPercent(cards, chances) {
   // Calculate percent to get straight
   let totalPercent = 0
   straights.forEach(straight => {
-    totalPercent += chanceToGetUniqueCards(deckQty - cards.length, straight.cardsNeeded, 4, chances)
+    totalPercent += probabilityOfDrawingOuts(cards.length, straight.cardsNeeded, chances)
   });
 
   return (totalPercent * 100).toFixed(2);
@@ -93,19 +89,64 @@ function fullhousePercent(cards, chances) {
 
 }
 
+// =============== Calculate Pair Percent ===============
+
 function pairPercent(cards, chances) {
   cards.sort((a, b) => a.rank - b.rank);
 
+  // Check for pair
   for (let i = 0; i < cards.length - 1; i++) {
     if (cards[i].rank == cards[i + 1].rank) {
       return 100
     }
   }
 
-  return (chanceToGetUniqueCard(deckQty - cards.length, cards.length, 3, chances) * 100).toFixed(2);
+  // Find odds of getting a pair
+  return ((probabilityOfDrawingOuts(cards.length, cards.length*3, chances) * 100).toFixed(2));
+}
+
+// =============== Calculate Two Pair Percent ===============
+
+function twoPairPercent(cards, chances) {
+  cards.sort((a, b) => a.rank - b.rank);
+
+  // Check for pair
+  let firstPair = 0
+  for (let i = 0; i < cards.length - 1; i++) {
+    if (cards[i].rank == cards[i + 1].rank && cards[i].rank != firstPair) {
+      if (firstPair == 0) firstPair = cards[i].rank
+      else return 100
+    }
+  }
+
+  // If there is only one pair, get probability of getting second pair
+  if (firstPair == 1){
+    return ((probabilityOfDrawingOuts(cards.length-2, (cards.length-2)*3, chances) * 100).toFixed(2));
+  // Get probability of getting 2 pairs
+  }else{
+
+    // Find the probability of one card hitting a pair
+    let firstPOdds = probabilityOfDrawingOuts(cards.length, cards.length*3, chances)
+
+    // Now find the porbabilly of another card hitting a pair assuming the first one hits
+    let secondPOdds = probabilityOfDrawingOuts(cards.length+1, (cards.length-1)*3, chances-1)
+
+    return ((firstPOdds * secondPOdds)* 100).toFixed(2)
+  }
 }
 
 // =============== Other Functions ===============
+
+function probabilityOfDrawingOuts(cardsDrawn, outs, draws) {
+  let cardsAvailable = 52 - cardsDrawn;
+  let probability = 0;
+  for (let i = 0; i < draws; i++) {
+    probability += outs / cardsAvailable;
+    cardsAvailable -= 1;
+  }
+  return probability;
+}
+
 
 // Returns number of matching values from 2 lists
 function countMatchingValues(array1, array2) {
@@ -132,11 +173,6 @@ function countMatchingValues(array1, array2) {
 function chanceToGetUniqueCards(deckSize, uniqueNeeded, uniqueQty, chances) {
   let totalProbability = 1;
 
-  console.log("deck size: " + deckSize)
-  console.log("unique needed: " + uniqueNeeded)
-  console.log("unique qty: " + uniqueQty)
-  console.log("chances:" + chances)
-
   for (let i = 0; i < uniqueNeeded; i++)
   {
     let probability = 0
@@ -149,7 +185,6 @@ function chanceToGetUniqueCards(deckSize, uniqueNeeded, uniqueQty, chances) {
     totalProbability *= probability
   }
 
-  console.log("prob: " + totalProbability)
   return totalProbability;
 }
 

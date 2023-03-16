@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Board } from "./Board/Board";
-import { faceDict, suitDict, masterHoleCards, masterRiverCards, hasLetter } from "./constants";
-import { evaluateHoleCards, getPercent } from "./BusinessLogic/BusinessLogic";
+import { faceDict, suitDict, masterHoleCards, masterRiverCards, hasLetter, HandTypes } from "./constants";
 import { PercentTable } from "./PercentTable/PercentTable";
 
 export function App() {
@@ -75,7 +74,7 @@ export function App() {
 
     // Create card if valid value/suit combo
     var card = {}
-    if ((cmd[0] > 0 && cmd[0] <= 14) || cmd[0].toUpperCase() in faceDict) {
+    if ((cmd[0] > 1 && cmd[0] <= 14) || cmd[0].toUpperCase() in faceDict) {
       if (cmd[1].toUpperCase() in suitDict) {
         card.rank = cmd[0].toUpperCase() in faceDict ? faceDict[cmd[0].toUpperCase()] : +cmd[0]
         card.suit = suitDict[cmd[1].toUpperCase()]
@@ -110,10 +109,7 @@ export function App() {
     <div id="app">
       <Board selectedCard={selectedCard} riverCards={riverCards} holeCards={holeCards} />
       <input maxLength={3} onKeyUp={onKeyUp} id="cardInput" placeholder="Type"></input>
-      <PercentTable 
-      pairPercent={getPercent(holeCards, riverCards, "pair")} 
-      straightPercent={getPercent(holeCards, riverCards, "straight")} 
-      />
+      <PercentTable holeCards={holeCards} riverCards={riverCards} />
     </div>
   );
 }

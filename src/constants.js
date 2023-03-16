@@ -19,6 +19,19 @@ export const suitDict = {
     "H": "heart",
 }
 
+export const HandTypes = {
+    Pair: 'Pair',
+    TwoPair: 'Two Pair',
+    ThreeOfAKind: 'Three of a Kind',
+    Straight: 'Straight',
+    Flush: 'Flush',
+    FullHouse: 'Full House',
+    FourOfAKind: 'Four of a Kind',
+    StraightFlush: 'Straight Flush',
+    RoyalFlush: 'Royal Flush',
+  };
+  
+
 export function hasLetter(string) {
     const letterRegex = /[a-z]/i;
     return letterRegex.test(string);
